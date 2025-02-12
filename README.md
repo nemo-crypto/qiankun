@@ -160,6 +160,7 @@ window.history.pushState = new Proxy(window.history.pushState, {
 
 
 - 最佳实践
+```
 // 1. 应用通信
 // 统一状态管理
 import { initGlobalState } from 'qiankun';
@@ -183,6 +184,7 @@ const actions = initGlobalState({
     return <h1>应用加载失败</h1>;
   }
 }
+```
 
 ### 六、选择建议：
 1. 如果是新项目，推荐使用 micro-app 或 wujie
