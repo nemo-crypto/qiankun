@@ -88,6 +88,7 @@ setupApp({
 - 支持多实例
 - 性能优秀
 ### 四、Garfish (字节)
+```
 // 主应用
 import Garfish from 'garfish';
 Garfish.run({
@@ -105,6 +106,7 @@ export function provider() {
     destroy() {}
   };
 }
+```
 特点：
 - 轻量级
 - 性能好
@@ -136,6 +138,7 @@ export function provider() {
 - Garfish: 轻量级应用
 
 6. 常见问题解决方案
+```
 // 1. 样式隔离
 // qiankun
 {
@@ -163,8 +166,7 @@ window.history.pushState = new Proxy(window.history.pushState, {
     return target.apply(thisBinding, args);
   }
 });
-
-
+```
 - 最佳实践
 ```
 // 1. 应用通信
