@@ -1,4 +1,4 @@
-一、qiankun (蚂蚁金服)
+### 一、qiankun (蚂蚁金服)
 npm i qiankun -S
 
 import { registerMicroApps, start } from 'qiankun';
@@ -41,7 +41,8 @@ start({
 主应用和微应用的路由需要协调，避免冲突
 建议使用 hash 或 history 路由模式
 注意跨域问题的处理
-二、micro-app (京东)
+
+### 二、micro-app (京东)
 <!-- 主应用 -->
 <micro-app 
   name="app1" 
@@ -56,7 +57,7 @@ start({
 - 不需要改造子应用
 - 天然隔离
 
-三、wujie (腾讯)
+### 三、wujie (腾讯)
 // 主应用
 import { setupApp } from 'wujie';
 setupApp({
@@ -80,7 +81,7 @@ setupApp({
 - 预加载能力
 - 支持多实例
 - 性能优秀
-四、Garfish (字节)
+### 四、Garfish (字节)
 // 主应用
 import Garfish from 'garfish';
 Garfish.run({
@@ -183,7 +184,7 @@ const actions = initGlobalState({
   }
 }
 
-选择建议：
+### 六、选择建议：
 1. 如果是新项目，推荐使用 micro-app 或 wujie
 - 如果是复杂项目，推荐使用 qiankun
 - 如果对性能要求高，推荐使用 wujie
