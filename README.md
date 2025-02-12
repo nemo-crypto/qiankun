@@ -1,26 +1,324 @@
 ### 一、qiankun (蚂蚁金服)
 ```
-npm i qiankun -S
 
+#### 1. 主应用配置
+
+```javascript:src/main-app/src/main.js
 import { registerMicroApps, start } from 'qiankun';
 
+// 注册子应用
 registerMicroApps([
   {
-    name: 'vue app', // 微应用的名称
-    entry: '//localhost:8080', // 微应用的入口
-    container: '#container', // 微应用的容器节点
-    activeRule: '/vue', // 激活微应用的路由规则
+    name: 'vue-app', // 子应用名称
+    entry: '//localhost:8081', // 子应用入口
+    container: '#vue-container', // 子应用容器
+    activeRule: '/vue-app', // 激活规则
   },
   {
-    name: 'react app',
-    entry: '//localhost:3000',
-    container: '#container',
-    activeRule: '/react',
-  },
+    name: 'react-app',
+    entry: '//localhost:8082',
+    container: '#react-container',
+    activeRule: '/react-app',
+  }
 ]);
 
-start(); // 启动 qiankun
+// 启动 qiankun
+start({
+  prefetch: true, // 预加载
+  sandbox: {
+    strictStyleIsolation: true, // 严格的样式隔离
+  }
+});
 ```
+
+
+#### 2. 主应用路由配置
+
+```javascript:src/main-app/src/router/index.js
+import { createRouter, createWebHistory } from 'vue-router';
+
+const router = createRouter({
+  history: createWebHistory(),
+  routes: [
+    {
+      path: '/',
+      component: () => import('../views/Home.vue'),
+    },
+    {
+      path: '/vue-app/:pathMatch(.*)*',
+      component: () => import('../views/MicroApp.vue'),
+    },
+    {
+      path: '/react-app/:pathMatch(.*)*',
+      component: () => import('../views/MicroApp.vue'),
+    }
+  ]
+});
+
+export default router;
+```
+
+#### 3. 主应用容器组件
+
+```vue:src/main-app/src/views/MicroApp.vue
+<template>
+  <div>
+    <div id="vue-container"></div>
+    <div id="react-container"></div>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'MicroApp'
+}
+</script>
+```
+
+#### 4. Vue 子应用配置
+
+```javascript:src/vue-app/src/main.js
+import { createApp } from 'vue';
+import App from './App.vue';
+import router from './router';
+import store from './store';
+
+let instance = null;
+
+// 渲染函数
+function render(props = {}) {
+  const { container } = props;
+  instance = createApp(App);
+  
+  instance.use(router).use(store);
+  instance.mount(container ? container.querySelector('#app') : '#app');
+}
+
+// qiankun 生命周期
+export async function bootstrap() {
+  console.log('vue app bootstraped');
+}
+
+export async function mount(props) {
+  console.log('vue app mounted', props);
+  render(props);
+}
+
+export async function unmount() {
+  console.log('vue app unmounted');
+  instance.unmount();
+  instance = null;
+}
+
+// 独立运行时
+if (!window.__POWERED_BY_QIANKUN__) {
+  render();
+}
+```
+
+#### 5. Vue 子应用配置文件
+
+```javascript:src/vue-app/vue.config.js
+const { defineConfig } = require('@vue/cli-service');
+const packageName = require('./package.json').name;
+
+module.exports = defineConfig({
+  devServer: {
+    port: 8081,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+    },
+  },
+  configureWebpack: {
+    output: {
+      library: `${packageName}-[name]`,
+      libraryTarget: 'umd',
+      chunkLoadingGlobal: `webpackJsonp_${packageName}`,
+    },
+  },
+});
+```
+
+#### 6. React 子应用配置
+
+```javascript:src/react-app/src/index.js
+import React from 'react';
+import ReactDOM from 'react-dom';
+import App from './App';
+
+function render(props = {}) {
+  const { container } = props;
+  ReactDOM.render(
+    <App />,
+    container ? container.querySelector('#root') : document.querySelector('#root')
+  );
+}
+
+export async function bootstrap() {
+  console.log('react app bootstraped');
+}
+
+export async function mount(props) {
+  console.log('react app mounted', props);
+  render(props);
+}
+
+export async function unmount(props) {
+  const { container } = props;
+  ReactDOM.unmountComponentAtNode(
+    container ? container.querySelector('#root') : document.querySelector('#root')
+  );
+}
+
+if (!window.__POWERED_BY_QIANKUN__) {
+  render();
+}
+```
+
+#### 7. React 子应用配置文件
+
+```javascript:src/react-app/config-overrides.js
+const { name } = require('./package.json');
+
+module.exports = {
+  webpack: (config) => {
+    config.output.library = `${name}-[name]`;
+    config.output.libraryTarget = 'umd';
+    config.output.chunkLoadingGlobal = `webpackJsonp_${name}`;
+    config.output.globalObject = 'window';
+
+    return config;
+  },
+  devServer: (configFunction) => {
+    return function (proxy, allowedHost) {
+      const config = configFunction(proxy, allowedHost);
+      config.headers = {
+        'Access-Control-Allow-Origin': '*',
+      };
+      return config;
+    };
+  },
+};
+```
+
+#### 8. 公共依赖处理
+
+```javascript:src/main-app/src/shared/index.js
+import store from '../store';
+
+const shared = {
+  store,
+  utils: {
+    // 公共工具函数
+  },
+  constants: {
+    // 公共常量
+  }
+};
+
+export default shared;
+```
+
+#### 9. 通信机制实现
+
+```javascript:src/main-app/src/utils/eventBus.js
+class EventBus {
+  constructor() {
+    this.events = {};
+  }
+
+  on(event, callback) {
+    if (!this.events[event]) {
+      this.events[event] = [];
+    }
+    this.events[event].push(callback);
+  }
+
+  emit(event, data) {
+    if (this.events[event]) {
+      this.events[event].forEach(callback => callback(data));
+    }
+  }
+
+  off(event, callback) {
+    if (this.events[event]) {
+      this.events[event] = this.events[event].filter(cb => cb !== callback);
+    }
+  }
+}
+
+export default new EventBus();
+```
+
+#### 10. 状态管理
+
+```javascript:src/main-app/src/store/index.js
+import { createStore } from 'vuex';
+
+export default createStore({
+  state: {
+    globalData: {}
+  },
+  mutations: {
+    SET_GLOBAL_DATA(state, data) {
+      state.globalData = data;
+    }
+  },
+  actions: {
+    updateGlobalData({ commit }, data) {
+      commit('SET_GLOBAL_DATA', data);
+    }
+  }
+});
+```
+
+#### 11. 样式隔离
+
+```javascript:src/main-app/src/utils/styleIsolation.js
+export function addStyleScope(styleStr, scopeName) {
+  return styleStr.replace(/([^}]*){([^}]*)}/g, (match, selector, style) => {
+    const newSelector = selector
+      .split(',')
+      .map(s => `${s.trim()}[data-qiankun="${scopeName}"]`)
+      .join(',');
+    return `${newSelector}{${style}}`;
+  });
+}
+```
+
+#### 12. 错误处理
+
+```javascript:src/main-app/src/utils/errorHandler.js
+export function setupErrorHandler() {
+  window.addEventListener('error', (event) => {
+    console.error('Micro App Error:', event);
+    // 错误上报逻辑
+  });
+
+  window.addEventListener('unhandledrejection', (event) => {
+    console.error('Unhandled Promise Rejection:', event);
+    // 错误上报逻辑
+  });
+}
+```
+
+#### 13. 启动命令
+
+```json:package.json
+{
+  "scripts": {
+    "start": "npm-run-all --parallel start:*",
+    "start:main": "cd main-app && npm start",
+    "start:vue": "cd vue-app && npm start",
+    "start:react": "cd react-app && npm start",
+    "build": "npm-run-all --parallel build:*",
+    "build:main": "cd main-app && npm run build",
+    "build:vue": "cd vue-app && npm run build",
+    "build:react": "cd react-app && npm run build"
+  }
+}
+```
+
 特点：
 - 基于 single-spa
 - 完善的沙箱机制
