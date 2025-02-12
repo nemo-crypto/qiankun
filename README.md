@@ -1,4 +1,5 @@
 ### 一、qiankun (蚂蚁金服)
+```
 npm i qiankun -S
 
 import { registerMicroApps, start } from 'qiankun';
@@ -19,6 +20,7 @@ registerMicroApps([
 ]);
 
 start(); // 启动 qiankun
+```
 特点：
 - 基于 single-spa
 - 完善的沙箱机制
