@@ -1,7 +1,7 @@
 ### 一、qiankun (蚂蚁金服)
 ```
 
-##### 1. 主应用配置
+ 1. 主应用配置
 
 ```javascript:src/main-app/src/main.js
 import { registerMicroApps, start } from 'qiankun';
@@ -32,7 +32,7 @@ start({
 ```
 
 
-#### 2. 主应用路由配置
+ 2. 主应用路由配置
 
 ```javascript:src/main-app/src/router/index.js
 import { createRouter, createWebHistory } from 'vue-router';
@@ -58,7 +58,7 @@ const router = createRouter({
 export default router;
 ```
 
-#### 3. 主应用容器组件
+ 3. 主应用容器组件
 
 ```vue:src/main-app/src/views/MicroApp.vue
 <template>
@@ -75,7 +75,7 @@ export default {
 </script>
 ```
 
-#### 4. Vue 子应用配置
+ 4. Vue 子应用配置
 
 ```javascript:src/vue-app/src/main.js
 import { createApp } from 'vue';
@@ -116,7 +116,7 @@ if (!window.__POWERED_BY_QIANKUN__) {
 }
 ```
 
-#### 5. Vue 子应用配置文件
+ 5. Vue 子应用配置文件
 
 ```javascript:src/vue-app/vue.config.js
 const { defineConfig } = require('@vue/cli-service');
@@ -139,7 +139,7 @@ module.exports = defineConfig({
 });
 ```
 
-#### 6. React 子应用配置
+ 6. React 子应用配置
 
 ```javascript:src/react-app/src/index.js
 import React from 'react';
@@ -175,7 +175,7 @@ if (!window.__POWERED_BY_QIANKUN__) {
 }
 ```
 
-#### 7. React 子应用配置文件
+ 7. React 子应用配置文件
 
 ```javascript:src/react-app/config-overrides.js
 const { name } = require('./package.json');
@@ -201,7 +201,7 @@ module.exports = {
 };
 ```
 
-#### 8. 公共依赖处理
+ 8. 公共依赖处理
 
 ```javascript:src/main-app/src/shared/index.js
 import store from '../store';
@@ -219,7 +219,7 @@ const shared = {
 export default shared;
 ```
 
-#### 9. 通信机制实现
+ 9. 通信机制实现
 
 ```javascript:src/main-app/src/utils/eventBus.js
 class EventBus {
@@ -250,7 +250,7 @@ class EventBus {
 export default new EventBus();
 ```
 
-#### 10. 状态管理
+ 10. 状态管理
 
 ```javascript:src/main-app/src/store/index.js
 import { createStore } from 'vuex';
@@ -272,7 +272,7 @@ export default createStore({
 });
 ```
 
-#### 11. 样式隔离
+ 11. 样式隔离
 
 ```javascript:src/main-app/src/utils/styleIsolation.js
 export function addStyleScope(styleStr, scopeName) {
@@ -286,7 +286,7 @@ export function addStyleScope(styleStr, scopeName) {
 }
 ```
 
-#### 12. 错误处理
+ 12. 错误处理
 
 ```javascript:src/main-app/src/utils/errorHandler.js
 export function setupErrorHandler() {
@@ -302,7 +302,7 @@ export function setupErrorHandler() {
 }
 ```
 
-#### 13. 启动命令
+ 13. 启动命令
 
 ```json:package.json
 {
