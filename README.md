@@ -1,7 +1,7 @@
 ### 一、qiankun (蚂蚁金服)
 ```
 
-#### 1. 主应用配置
+##### 1. 主应用配置
 
 ```javascript:src/main-app/src/main.js
 import { registerMicroApps, start } from 'qiankun';
