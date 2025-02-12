@@ -45,6 +45,7 @@ start({
 注意跨域问题的处理
 
 ### 二、micro-app (京东)
+```
 <!-- 主应用 -->
 <micro-app 
   name="app1" 
@@ -52,6 +53,7 @@ start({
   baseroute="/my-page">
 </micro-app>
 <!-- 子应用无需改造 -->
+```
 特点：
 - 使用 Web Components
 - 零依赖
@@ -60,6 +62,7 @@ start({
 - 天然隔离
 
 ### 三、wujie (腾讯)
+```
 // 主应用
 import { setupApp } from 'wujie';
 setupApp({
@@ -77,6 +80,7 @@ setupApp({
   :sync="true"
   :props="props"
 />
+```
 特点：
 - 基于 Web Components
 - 使用 iframe 隔离
