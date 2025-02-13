@@ -75,7 +75,7 @@ export default {
 </script>
 ```
 
- 4. Vue 子应用配置
+ 4. Vue子应用配置
 
 ```javascript:src/vue-app/src/main.js
 import { createApp } from 'vue';
