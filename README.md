@@ -94,7 +94,7 @@ function render(props = {}) {
   instance.mount(container ? container.querySelector('#app') : '#app');
 }
 
-// qiankun 生命周期
+// qiankun 生命周期钩子函数
 export async function bootstrap() {
   console.log('vue app bootstraped');
 }
