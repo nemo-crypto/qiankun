@@ -383,7 +383,7 @@ setupApp({
 - 基于 Web Components
 - 使用 iframe 隔离
 - 预加载能力
-- 支持多实例
+- 支持多个实例
 - 性能优秀
 ### 四、Garfish (字节)
 ```
