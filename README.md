@@ -320,7 +320,7 @@ export function setupErrorHandler() {
 ```
 
 特点：
-- 基于 single-spa
+- 基于single-spa
 - 完善的沙箱机制
 - 样式隔离
 - 资源预加载
