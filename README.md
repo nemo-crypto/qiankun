@@ -9,7 +9,7 @@ import { registerMicroApps, start } from 'qiankun';
 // 注册子应用
 registerMicroApps([
   {
-    name: 'vue-app', // 子应用名称
+    name: 'vue-app', // 单个子应用名称
     entry: '//localhost:8081', // 子应用入口
     container: '#vue-container', // 子应用容器
     activeRule: '/vue-app', // 激活规则
