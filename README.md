@@ -94,7 +94,7 @@ function render(props = {}) {
   instance.mount(container ? container.querySelector('#app') : '#app');
 }
 
-// qiankun 生命周期钩子函数
+// qiankun生命周期钩子函数
 export async function bootstrap() {
   console.log('vue app bootstraped');
 }
@@ -116,7 +116,7 @@ if (!window.__POWERED_BY_QIANKUN__) {
 }
 ```
 
- 5. Vue 子应用配置文件
+ 5. Vue项目子应用配置文件
 
 ```javascript:src/vue-app/vue.config.js
 const { defineConfig } = require('@vue/cli-service');
@@ -139,7 +139,7 @@ module.exports = defineConfig({
 });
 ```
 
- 6. React 子应用配置
+ 6. React项目子应用配置
 
 ```javascript:src/react-app/src/index.js
 import React from 'react';
@@ -175,7 +175,7 @@ if (!window.__POWERED_BY_QIANKUN__) {
 }
 ```
 
- 7. React 子应用配置文件
+ 7. React项目子应用配置文件
 
 ```javascript:src/react-app/config-overrides.js
 const { name } = require('./package.json');
