@@ -124,7 +124,7 @@ const packageName = require('./package.json').name;
 
 module.exports = defineConfig({
   devServer: {
-    port: 8081,
+    port: 8081, // 启动端口
     headers: {
       'Access-Control-Allow-Origin': '*',
     },
@@ -328,7 +328,7 @@ export function setupErrorHandler() {
 常见问题解决：
 - 跨域问题：确保微应用的 devServer 配置了正确的 CORS 头
 - 样式隔离：可以使用 experimentalStyleIsolation 配置
-- JS 沙箱：qiankun 默认启用了 JS 沙箱，可以通过配置调整
+- JS 沙箱：qiankun 默认启用了JS沙箱，可以通过配置调整
 start({
   sandbox: {
     strictStyleIsolation: true, // 严格的样式隔离
@@ -353,7 +353,7 @@ start({
 <!-- 子应用无需改造 -->
 ```
 特点：
-- 使用 Web Components
+- 使用Web Components
 - 零依赖
 - 简单易用
 - 不需要改造子应用
