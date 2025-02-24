@@ -124,7 +124,7 @@ const packageName = require('./package.json').name;
 
 module.exports = defineConfig({
   devServer: {
-    port: 8081, // 启动端口
+    port: 8081, // 启动端口8081
     headers: {
       'Access-Control-Allow-Origin': '*',
     },
