@@ -385,7 +385,7 @@ setupApp({
 - 预加载能力
 - 支持多个实例
 - 性能优秀
-### 四、Garfish (字节)
+### 四、Garfish(字节跳动)
 ```
 // 主应用
 import Garfish from 'garfish';
