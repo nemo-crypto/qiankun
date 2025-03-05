@@ -58,7 +58,7 @@ const router = createRouter({
 export default router;
 ```
 
- 3. 主应用容器组件
+ 3. 主要应用容器组件
 
 ```vue:src/main-app/src/views/MicroApp.vue
 <template>
