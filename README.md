@@ -63,8 +63,8 @@ export default router;
 ```vue:src/main-app/src/views/MicroApp.vue
 <template>
   <div>
-    <div id="vue-container"></div>
-    <div id="react-container"></div>
+    <div id="vue-container">tets</div>
+    <div id="react-container">tets</div>
   </div>
 </template>
 
