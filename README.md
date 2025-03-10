@@ -209,10 +209,10 @@ import store from '../store';
 const shared = {
   store,
   utils: {
-    // 公共工具函数
+    // 公共工具函数及逻辑
   },
   constants: {
-    // 公共常量
+    // 公共常量定义
   }
 };
 
