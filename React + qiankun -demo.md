@@ -2,7 +2,7 @@
 1. **基座应用搭建**
 
 ```bash
-# 创建主应用
+# 创建主 应用
 npx create-react-app main-app
 cd main-app
 
