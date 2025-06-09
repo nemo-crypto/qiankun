@@ -21,6 +21,7 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
+  
 export default {
   computed: {
     // 通过global获取user的信息
