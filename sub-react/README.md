@@ -1,68 +1,25 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# React 子应用
 
-## Available Scripts
+React 16与react-scripts 3工程，通过react-app-rewired覆盖打包和开发服务配置。
 
-In the project directory, you can run:
+[完整工程说明](../README.md) · [源码入口](src/index.js)
 
-### `yarn start`
+## 安装与执行
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+建议先按根工程说明批量安装。单独维护本工程时，在当前目录执行npm install，再运行所需命令：
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+```bash
+npm start
+npm run build
+npm test -- --watchAll=false
+```
 
-### `yarn test`
+## 配置与接入
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+config-overrides.js配置UMD库名、独立jsonpFunction和跨域头，并关闭开发服务自动打开与热更新。基座激活规则为/sub-react。
 
-### `yarn build`
+基座场景需要其他服务和应用入口同时可用；直接访问本应用与通过基座加载应分别验证。公共状态和工具从上级common目录接入，其自身没有独立服务。
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## 验证范围
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `yarn eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `yarn build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+本轮核对package.json、入口与打包配置，未安装依赖或运行应用。仅将package.json中存在的脚本列为执行入口，不代表本轮已运行通过。
