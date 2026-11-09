@@ -1,0 +1,21 @@
+# 将 /srv/qiankun 替换为实际 dist 目录；按实际部署配置域名和 TLS。
+server {
+    listen 80;
+    server_name localhost;
+    root /srv/qiankun;
+
+    location = /subapp/sub-vue { return 301 /subapp/sub-vue/; }
+    location = /subapp/sub-react { return 301 /subapp/sub-react/; }
+    location = /subapp/sub-html { return 301 /subapp/sub-html/; }
+
+    location ~ ^/subapp/(sub-vue|sub-react|sub-html)/.*\.[^/]+$ {
+        try_files $uri =404;
+    }
+    location /subapp/sub-vue/ { try_files $uri $uri/ /subapp/sub-vue/index.html; }
+    location /subapp/sub-react/ { try_files $uri $uri/ /subapp/sub-react/index.html; }
+    location /subapp/sub-html/ { try_files $uri $uri/ /subapp/sub-html/index.html; }
+    location /subapp/ { return 404; }
+
+    location / { root /srv/qiankun/main; try_files $uri $uri/ /index.html; }
+    location ~ \.[^/]+$ { root /srv/qiankun/main; try_files $uri =404; }
+}

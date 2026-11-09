@@ -1,13 +1,21 @@
-# 微前端公共模块
+# 公共模块
 
-提供主/子应用之间复用的状态、API和SDK源码，入口为 [src/index.js](src/index.js)，模块分别位于 `src/store/`、`src/api/` 与 `src/sdk/`。
+通过 npm workspaces 连接主应用和子应用，不需要单独安装或启动。
 
-[完整工程说明](../README.md)
+- `src/state.js`：默认状态和框架无关 bridge，提供读取、写入、订阅、销毁。
+- `src/store/global-register.js`：Vuex 适配，每次注册返回 cleanup，卸载时必须调用。
+- `src/demo.css`：限定在 `.mf-demo` 下的演示样式。
+- `src/api`、`src/sdk`：保留原来的空扩展点，当前没有真实后端请求。
 
-## 使用条件
+bridge 返回状态快照，避免子应用直接更改基座对象。顶层状态字段须在 `defaultState()` 中预先声明。独立模式本地更新，嵌入模式通过 qiankun props 通知基座。
 
-该目录不是独立Web应用，没有start或build脚本。Vue子应用通过 `file:../common` 引入，相关webpack配置会处理common的转译。消费方需要核对相对依赖、打包转译与共享状态约定。
+```js
+const bridge = createBridge(props)
+const unsubscribe = bridge.subscribe(state => renderState(state))
+bridge.setState({ count: bridge.getState().count + 1, source: '我的应用' })
+// unmount 时执行
+unsubscribe()
+bridge.destroy()
+```
 
-## 维护
-
-修改共享方法时，同时检查主应用和实际消费子应用。不要把主应用提供的状态访问接口与各子应用本地store混为一谈。当前test脚本为占位命令，本轮未运行跨应用联调。
+从 `common` 导入 `createBridge`，示例中的 `props` 和 `renderState` 由消费应用提供。根目录 `npm run check` 覆盖桥接行为；浏览器测试覆盖三种框架的真实联动。
