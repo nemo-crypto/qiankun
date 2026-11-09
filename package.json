@@ -1,39 +1,45 @@
 {
   "name": "qiankun-example",
-  "version": "0.0.1",
-  "description": "qiankun demo",
-  "main": "index.js",
-  "dependencies": {},
-  "devDependencies": {
-    "npm-run-all": "^4.1.5"
+  "version": "1.0.0",
+  "private": true,
+  "description": "开箱即用的多框架微前端教学工作台",
+  "workspaces": [
+    "main",
+    "sub-vue",
+    "sub-react",
+    "sub-html",
+    "common"
+  ],
+  "engines": {
+    "node": ">=22.14 <25",
+    "npm": ">=10"
   },
   "scripts": {
-    "install": "npm-run-all --serial install:*",
-    "install:main": "cd main && npm i",
-    "install:sub-vue": "cd sub-vue && npm i",
-    "install:sub-react": "cd sub-react && npm i",
-    "install:sub-html": "cd sub-html && npm i",
-    "start": "npm-run-all --parallel start:*",
-    "start:sub-react": "cd sub-react && npm start",
-    "start:sub-vue": "cd sub-vue && npm start",
-    "start:main": "cd main && npm start",
-    "start:sub-html": "cd sub-html && npm start",
-    "build": "npm-run-all build:* && bash ./scripts/bundle.sh",
-    "build:sub-react": "cd sub-react && npm run build",
-    "build:sub-vue": "cd sub-vue && npm run build",
-    "build:sub-html": "cd sub-html && npm run build",
-    "build:main": "cd main && npm run build",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "node scripts/dev.cjs",
+    "start": "npm run dev",
+    "build": "node scripts/build.cjs",
+    "preview": "node scripts/preview.cjs",
+    "check": "node --test tests/*.test.cjs",
+    "test": "npm run check && npm run test:e2e",
+    "test:e2e": "playwright test",
+    "test:e2e:dev": "playwright test --config playwright.dev.config.cjs",
+    "setup:browsers": "playwright install chromium"
   },
-  "repository": {
-    "type": "git",
-    "url": "git@nemo-crypto.github.com:nemo-crypto/qiankun-example.git"
+  "devDependencies": {
+    "@babel/core": "^7.28.0",
+    "@babel/preset-env": "^7.28.0",
+    "@babel/preset-react": "^7.27.0",
+    "@playwright/test": "^1.56.0",
+    "babel-loader": "^10.0.0",
+    "css-loader": "^7.1.2",
+    "dotenv": "^17.2.0",
+    "express": "^5.1.0",
+    "html-webpack-plugin": "^5.6.3",
+    "style-loader": "^4.0.0",
+    "vue-loader": "^15.11.1",
+    "vue-template-compiler": "2.7.16",
+    "webpack": "^5.102.0",
+    "webpack-dev-server": "^5.2.2"
   },
-  "keywords": [
-    "qiankun",
-    "qiankun-example",
-    "demo"
-  ],
-  "author": "nemo-crypto",
   "license": "MIT"
 }

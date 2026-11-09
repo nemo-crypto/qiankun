@@ -1,89 +1,25 @@
 <template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> /
-      <router-link to="/about">About</router-link>
+  <section class="mf-demo" data-testid="vue-app">
+    <div class="mf-eyebrow">VUE / REACTIVE EXPERIENCE</div><h1>让状态，连接每个应用。</h1><p>Vue + Vuex 示例。修改用户或计数，再切换到其他应用，查看同一份共享状态。</p>
+    <div class="mf-actions"><router-link class="mf-link" to="/">交互示例</router-link><router-link class="mf-link" to="/about">路由说明</router-link></div>
+    <router-view />
+    <div class="mf-grid">
+      <section class="mf-panel"><h2>共享用户</h2><div class="mf-value" data-testid="child-user">{{ user.name }}</div><form @submit.prevent="save"><label for="vue-name">新用户名称</label><input id="vue-name" v-model="name" maxlength="30" placeholder="输入一个名字" /><div class="mf-actions"><button class="mf-primary" :disabled="!name.trim()">更新共享用户</button></div></form></section>
+      <section class="mf-panel"><h2>共享计数器</h2><div class="mf-value" data-testid="child-count">{{ count }}</div><p>最近更新：{{ source }}</p><div class="mf-actions"><button class="mf-primary" @click="increment">共享计数 +1</button><a v-if="embedded" class="mf-link" href="/sub-react" @click.prevent="goReact">前往 React</a></div></section>
     </div>
-    <div>
-      <p>当前处于<code>{{ isInQiankun ? 'qiankun' : '独立运行'}}</code>环境</p>
-      <p>vuex的`global module`的user state：<code> {{ JSON.stringify(user) }}</code></p>
-    </div>
-    <div class="btns">
-      <template v-if="isInQiankun">
-        <button @click="gotoSubReact">从当前子应用内跳转到`sub-react`子应用</button>
-        <button @click="openSubVue">独立打开sub-vue子应用</button>
-      </template>
-      <button @click="changeUsername">改变全局的用户名称</button>
-    </div>
-    <router-view/>
-  </div>
+    <div class="mf-note">运行模式：{{ embedded ? 'qiankun 基座内' : '独立运行' }} · 独立运行使用本地状态，基座内通过显式桥接同步。</div>
+  </section>
 </template>
-
 <script>
 import { mapState, mapActions } from 'vuex'
-  
 export default {
-  computed: {
-    // 通过global获取user的信息
-    ...mapState('global', {
-      user: state => state.user
-    }),
-    isInQiankun () {
-      return window.__POWERED_BY_QIANKUN__
-    }
-  },
+  data: () => ({ name: '', embedded: !!window.__POWERED_BY_QIANKUN__ }),
+  computed: { ...mapState('global', ['user', 'count', 'source']) },
   methods: {
-    // setGlobalState 是在 /common/src/store/global-register.js中定义的
     ...mapActions('global', ['setGlobalState']),
-    gotoSubReact () {
-      history.pushState(null, 'sub-react', '/sub-react')
-    },
-    changeUsername () {
-      // 也可通过 store.commit('global/setGlobalState', { user: '李四' }) 进行操作
-      this.setGlobalState({
-        user: { name: '李四' + Math.round(Math.random() * 100) }
-      })
-    },
-    openSubVue () {
-      if (!this.isInQiankun) {
-        alert('当前已经是单独运行的子应用')
-        return
-      }
-
-      // window.__INJECTED_PUBLIC_PATH_BY_QIANKUN__ 是qiankun注入的子应用对应的地址，谨慎使用，生产环境建议将跳转地址维护在环境变量中
-      window.open(window.__INJECTED_PUBLIC_PATH_BY_QIANKUN__)
-    }
+    save() { const name = this.name.trim(); if (name) { this.setGlobalState({ user: { name }, source: 'Vue 应用' }); this.name = '' } },
+    increment() { this.setGlobalState({ count: this.count + 1, source: 'Vue 应用' }) },
+    goReact() { history.pushState(null, '', '/sub-react') }
   }
 }
 </script>
-
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-
-#nav {
-  padding: 30px;
-}
-
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-#nav a.router-link-exact-active {
-  color: #42b983;
-}
-
-.btns{
-  margin: 100px;
-}
-.btns button{
-  margin: 0 10px;
-}
-
-</style>

@@ -1,50 +1,19 @@
 import Vue from 'vue'
 import App from './App.vue'
-import { registerMicroApps, start, setDefaultMountApp } from 'qiankun'
-import microApps from './micro-app'
-import 'nprogress/nprogress.css'
-
+import { registerMicroApps, start, setDefaultMountApp, addGlobalUncaughtErrorHandler } from 'qiankun'
+import apps from './micro-app'
+import { runtime, record } from './runtime'
 Vue.config.productionTip = false
-
-const instance = new Vue({
-  render: h => h(App)
-}).$mount('#app')
-
-// 定义loader方法，loading改变时，将变量赋值给App.vue的data中的isLoading
-function loader (loading) {
-  if (instance && instance.$children) {
-    // instance.$children[0] 是App.vue，此时直接改动App.vue的isLoading
-    instance.$children[0].isLoading = loading
-  }
-}
-
-// 给子应用配置加上loader方法
-const apps = microApps.map(item => {
-  return {
-    ...item,
-    loader
-  }
+new Vue({ render: h => h(App) }).$mount('#app')
+registerMicroApps(apps.map(app => ({ ...app, loader: loading => { runtime.loading = loading } })), {
+  beforeLoad: [async app => { runtime.error = ''; record(app.name, '加载资源') }],
+  beforeMount: [async app => { runtime.error = ''; record(app.name, '开始挂载') }],
+  afterMount: [async app => { runtime.loading = false; record(app.name, '挂载完成') }],
+  afterUnmount: [async app => { record(app.name, '卸载完成') }]
 })
-
-registerMicroApps(apps, {
-  beforeLoad: app => {
-    console.log('before load app.name====>>>>>', app.name)
-  },
-  beforeMount: [
-    app => {
-      console.log('[LifeCycle] before mount %c%s', 'color: green;', app.name)
-    }
-  ],
-  afterMount: [
-    app => {
-      console.log('[LifeCycle] after mount %c%s', 'color: green;', app.name)
-    }
-  ],
-  afterUnmount: [
-    app => {
-      console.log('[LifeCycle] after unmount %c%s', 'color: green;', app.name)
-    }
-  ]
+addGlobalUncaughtErrorHandler(event => {
+  runtime.loading = false
+  runtime.error = event.message || event.reason?.message || '子应用未能加载，请检查服务和入口地址。'
 })
 setDefaultMountApp('/sub-vue')
-start()
+start({ prefetch: false, sandbox: { experimentalStyleIsolation: true } })
