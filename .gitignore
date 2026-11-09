@@ -7,3 +7,5 @@ build/
 playwright-report/
 test-results/
 *.log
+
+.npm-cache/
