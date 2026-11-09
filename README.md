@@ -2,6 +2,18 @@
 
 以Vue 2为主应用，接入Vue、React和原生HTML子应用，演示应用注册、按路由激活、共享状态、独立运行与聚合构建。
 
+<!-- BEGIN project-discovery -->
+## 项目定位与实践入口
+
+Qiankun micro-frontend demo with a Vue host and Vue, React and vanilla HTML sub-apps. 微前端架构实战：路由挂载、共享状态、独立运行与聚合构建。
+
+适合从以下入口阅读实现与接入条件：
+
+- [子应用注册](main/src/micro-app.js)
+- [公共模块](common/README.md)
+- [React 子应用](sub-react/README.md)
+<!-- END project-discovery -->
+
 ## 工程与路由
 
 | 工程 | 技术/职责 | 激活规则 | 使用说明 |
