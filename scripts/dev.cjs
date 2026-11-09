@@ -20,7 +20,7 @@ process.on('SIGTERM', () => stop())
       host, port: app.port, hot: false, liveReload: true,
       headers: { 'Access-Control-Allow-Origin': '*' },
       historyApiFallback: true, static: false,
-      client: { overlay: { errors: true, warnings: false }, logging: 'warn' },
+      client: { overlay: { errors: true, warnings: false, runtimeErrors: false }, logging: 'warn' },
       devMiddleware: { stats: 'errors-warnings' }
     }, webpack(createConfig(app)))
     servers.push(server)

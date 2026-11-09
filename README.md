@@ -55,7 +55,7 @@ sub-html/      原生 DOM 与事件管理
 common/        状态桥接、Vuex 适配与演示样式
 config/        统一 Webpack 5 配置、HTML 模板、环境配置
 scripts/       跨平台启动、构建与生产预览
- tests/        状态、服务器及浏览器行为测试
+tests/        状态、服务器及浏览器行为测试
 ```
 
 源码入口：[应用注册](main/src/micro-app.js)、[状态桥接](common/src/state.js)、[Vuex 适配](common/src/store/global-register.js)。子应用 UMD 库和 chunk 命名相互隔离；资源 publicPath 与路由 base 分开处理。React 和原生应用只在自己的容器内查询节点，卸载时清理订阅与事件。
