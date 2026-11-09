@@ -27,7 +27,7 @@ module.exports = function config(app, production = false) {
         babelrc: false, configFile: false,
         presets: [['@babel/preset-env', { targets: 'defaults' }], '@babel/preset-react']
       } } },
-      { test: /\.css$/, use: ['style-loader', 'css-loader'] },
+      { test: /\.css$/, use: [{ loader: 'style-loader', options: { esModule: false } }, { loader: 'css-loader', options: { esModule: false } }] },
       { test: /\.(png|svg|jpg|gif|ico)$/, type: 'asset/resource' }
     ] },
     plugins: [
