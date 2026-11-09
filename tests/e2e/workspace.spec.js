@@ -62,6 +62,7 @@ test('三个子应用均可独立运行并使用本地状态', async ({ page }) 
     await expect(page.getByTestId('child-count')).toHaveText('1')
     if (name === 'sub-vue') {
       await page.getByRole('link', { name: '路由说明' }).click()
+      await expect(page.getByRole('heading', { name: '子应用路由说明' })).toBeVisible()
       await page.reload()
       await expect(page.getByRole('heading', { name: '子应用路由说明' })).toBeVisible()
     }
