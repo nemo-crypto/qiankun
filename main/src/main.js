@@ -15,5 +15,5 @@ addGlobalUncaughtErrorHandler(event => {
   runtime.loading = false
   runtime.error = event.message || event.reason?.message || '子应用未能加载，请检查服务和入口地址。'
 })
-if (window.location.pathname === '/') setDefaultMountApp('/sub-vue')
+if (window.location.pathname === __SITE_BASE__) setDefaultMountApp(apps[0].route)
 start({ prefetch: false, sandbox: { experimentalStyleIsolation: true } })

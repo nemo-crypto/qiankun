@@ -14,7 +14,7 @@ function render(props = {}) {
   const store = new Vuex.Store({})
   cleanup = commonStore.globalRegister(store, props)
   const router = new VueRouter({ mode: 'history', base: props.routerBase || process.env.BASE_URL, routes })
-  instance = new Vue({ router, store, render: h => h(App) }).$mount(props.container ? props.container.querySelector('#app') : '#app')
+  instance = new Vue({ router, store, render: h => h(App, { props: { hostBase: props.hostBase } }) }).$mount(props.container ? props.container.querySelector('#app') : '#app')
 }
 if (!window.__POWERED_BY_QIANKUN__) render()
 export async function bootstrap() {}

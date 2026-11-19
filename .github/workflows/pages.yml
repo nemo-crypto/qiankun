@@ -1,0 +1,55 @@
+name: Publish demo to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+        env:
+          PAGES_BASE: /qiankun/
+      - name: Assemble host and microfrontend routes
+        run: |
+          mkdir -p dist/pages
+          cp -R dist/main/. dist/pages/
+          cp -R dist/subapp dist/pages/
+          for route in sub-vue sub-vue/about sub-react sub-html; do
+            mkdir -p "dist/pages/$route"
+            cp dist/pages/index.html "dist/pages/$route/index.html"
+          done
+          mkdir -p dist/pages/subapp/sub-vue/about
+          cp dist/pages/subapp/sub-vue/index.html dist/pages/subapp/sub-vue/about/index.html
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: dist/pages
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

@@ -5,7 +5,8 @@ const { VueLoaderPlugin } = require('vue-loader')
 const { apps, root } = require('./settings.cjs')
 module.exports = function config(app, production = false) {
   const isMain = app.name === 'main'
-  const publicPath = production && !isMain ? `/subapp/${app.name}/` : '/'
+  const siteBase = production ? (process.env.PAGES_BASE || '/') : '/'
+  const publicPath = production && !isMain ? `${siteBase}subapp/${app.name}/` : siteBase
   return {
     name: app.name,
     mode: production ? 'production' : 'development',
@@ -35,6 +36,7 @@ module.exports = function config(app, production = false) {
       new HtmlWebpackPlugin({ template: path.join(root, 'config/template.html'), title: isMain ? 'Qiankun · 微前端工作台' : `${app.name} · 独立应用`, scriptLoading: 'blocking' }),
       new webpack.DefinePlugin({
         'process.env.BASE_URL': JSON.stringify(publicPath),
+        __SITE_BASE__: JSON.stringify(siteBase),
         __APP_PORTS__: JSON.stringify(Object.fromEntries(apps.map(item => [item.name, item.port]))),
         __APP_ENTRIES__: JSON.stringify({
           'sub-vue': process.env.VUE_APP_SUB_VUE || '',

@@ -1,14 +1,14 @@
 <template>
   <div class="workspace">
     <aside class="sidebar">
-      <a class="brand" href="/">Q<span>qiankun<span class="brand-sub">MICRO FRONTEND LAB</span></span></a>
+      <a class="brand" :href="siteBase">Q<span>qiankun<span class="brand-sub">MICRO FRONTEND LAB</span></span></a>
       <p class="nav-label">应用工作台</p>
       <nav aria-label="子应用导航">
         <a v-for="(app, index) in apps" :key="app.name" :href="app.route" :aria-current="current === app.name ? 'page' : null" :class="['nav-item', { selected: current === app.name }]" @click="navigate($event, app.route)">
           <span class="nav-icon">{{ ['V', 'R', 'H'][index] }}</span><span>{{ app.label }}<small>{{ app.name }}</small></span><span class="nav-arrow">↗</span>
         </a>
       </nav>
-      <div class="sidebar-foot"><span class="status-dot"></span> 本地演示 · 无需后端<p>一个基座，三种技术栈。<br>切换应用，观察状态与生命周期。</p></div>
+      <div class="sidebar-foot"><span class="status-dot"></span> 交互演示 · 无需后端<p>一个基座，三种技术栈。<br>切换应用，观察状态与生命周期。</p></div>
     </aside>
     <main class="main-content">
       <header class="topbar"><span>工作空间 <span class="crumb">/ {{ active ? active.label : '页面未找到' }}</span></span><a v-if="active" :href="active.entry" target="_blank" rel="noopener noreferrer">独立打开应用 ↗</a></header>
@@ -22,7 +22,7 @@
         <div class="frame-bar"><span><i class="status-dot"></i>{{ active ? active.name : '未知路由' }}</span><span>{{ runtime.error ? '加载异常' : runtime.loading ? '正在加载…' : '应用容器' }}</span></div>
         <div v-if="runtime.error" class="error-box" role="alert"><h2>应用暂时无法加载</h2><p>确认子应用服务已启动，或检查入口地址。修复后重新加载页面。</p><code>{{ runtime.error }}</code><button @click="reload">重新加载页面</button></div>
         <p v-else-if="runtime.loading" class="loading" role="status">正在加载子应用，请稍候…</p>
-        <div v-if="!active" class="empty"><h2>这里还没有应用</h2><p>从左侧选择一个应用，或<a href="/sub-vue" @click="navigate($event, '/sub-vue')">返回 Vue 示例</a>。</p></div>
+        <div v-if="!active" class="empty"><h2>这里还没有应用</h2><p>从左侧选择一个应用，或<a :href="apps[0].route" @click="navigate($event, apps[0].route)">返回 Vue 示例</a>。</p></div>
         <div id="subapp-viewport"></div>
       </section>
       <section class="lifecycle"><div><h2>生命周期观察</h2><p>切换应用，查看真实触发的挂载与卸载记录。</p></div><ol aria-label="生命周期记录"><li v-for="event in runtime.events" :key="event.id"><time>{{ event.time }}</time><strong>{{ event.app }}</strong><span>{{ event.phase }}</span></li><li v-if="!runtime.events.length">等待应用加载</li></ol></section>
@@ -36,7 +36,7 @@ import store, { state } from './store'
 import { defaultState } from 'common'
 import { runtime } from './runtime'
 export default {
-  data: () => ({ apps, state, runtime, pathname: window.location.pathname }),
+  data: () => ({ apps, state, runtime, siteBase: __SITE_BASE__, pathname: window.location.pathname }),
   computed: {
     active() { return this.apps.find(app => this.pathname === app.route || this.pathname.startsWith(app.route + '/')) },
     current() { return this.active?.name }
