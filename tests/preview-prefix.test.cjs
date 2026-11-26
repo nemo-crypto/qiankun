@@ -35,3 +35,16 @@ test('preview serves host and microfrontend assets below PAGES_BASE', async t =>
  }
  assert.equal(await (await fetch(origin + '/qiankun/subapp/sub-react/')).text(), '<html>subapp/sub-react</html>')
 })
+
+test('prefixed history routes work while missing resources and out-of-prefix URLs stay 404', async t => {
+ const origin = await fixture(t, '/qiankun/')
+ assert.equal(await (await fetch(origin + '/qiankun/sub-vue/about', { headers: { accept: 'text/html' } })).text(), '<html>main</html>')
+ assert.equal(await (await fetch(origin + '/qiankun/subapp/sub-vue/about', { headers: { accept: 'text/html' } })).text(), '<html>subapp/sub-vue</html>')
+ assert.equal((await fetch(origin + '/qiankun/assets/missing.js')).status, 404)
+ assert.equal((await fetch(origin + '/assets/app.js')).status, 404)
+})
+test('default root preview keeps its existing assets and child entrypoints', async t => {
+ const origin = await fixture(t, '/')
+ assert.equal((await fetch(origin + '/assets/app.js')).status, 200)
+ assert.equal(await (await fetch(origin + '/subapp/sub-html/')).text(), '<html>subapp/sub-html</html>')
+})
