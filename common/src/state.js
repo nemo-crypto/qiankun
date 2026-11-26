@@ -4,7 +4,9 @@ const clone = value => JSON.parse(JSON.stringify(value))
 export function createBridge(props = {}) {
   let state = clone(props.getGlobalState ? props.getGlobalState() : defaultState())
   const listeners = new Set()
+  let revision = 0
   const publish = next => {
+    revision++
     state = clone(next)
     listeners.forEach(listener => listener(clone(state)))
   }
@@ -14,11 +16,13 @@ export function createBridge(props = {}) {
     subscribe(listener) { listeners.add(listener); listener(clone(state)); return () => listeners.delete(listener) },
     setState(patch) {
       const next = { ...state, ...clone(patch) }
+      const beforeWrite = revision
       if (props.setGlobalState) {
         const accepted = props.setGlobalState(patch)
         if (accepted === false) return false
       }
-      publish(next)
+      // qiankun 同步广播时已完成通知；不要再用旧合并结果覆盖宿主状态。
+      if (revision === beforeWrite) publish(next)
       return true
     },
     destroy() { listeners.clear(); if (props.offGlobalStateChange) props.offGlobalStateChange() }
