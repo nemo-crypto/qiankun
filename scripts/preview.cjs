@@ -11,17 +11,20 @@ for (const app of apps) {
 }
 const server = express()
 server.disable('x-powered-by')
+const site = express.Router()
+const siteBase = process.env.PAGES_BASE || '/'
 for (const app of apps.filter(app => app.name !== 'main')) {
   const folder = path.join(root, 'dist/subapp', app.name)
   const router = express.Router()
   router.use(express.static(folder))
   router.use(spaFallback(folder))
-  server.use(`/subapp/${app.name}`, router)
+  site.use(`/subapp/${app.name}`, router)
 }
 const main = path.join(root, 'dist/main')
-server.use(express.static(main))
-server.use(spaFallback(main))
+site.use(express.static(main))
+site.use(spaFallback(main))
+server.use(siteBase, site)
 const listenPort = port(process.env.PREVIEW_PORT, 4173)
-const listener = server.listen(listenPort, host, () => console.log(`生产预览：http://${host}:${listenPort}`))
+const listener = server.listen(listenPort, host, () => console.log(`生产预览：http://${host}:${listenPort}${siteBase}`))
 listener.on('error', error => { console.error(`预览启动失败：${error.message}`); process.exitCode = 1 })
 for (const signal of ['SIGINT', 'SIGTERM']) process.on(signal, () => listener.close())
