@@ -21,3 +21,24 @@ test('a synchronous host broadcast produces one subscriber update for a child wr
   assert.equal(bridge.getState().count, 1)
   bridge.destroy()
 })
+
+test('a reentrant host update remains authoritative when the original child write returns', async () => {
+  const { createBridge, defaultState } = await stateModule()
+  let receive
+  const bridge = createBridge({
+    getGlobalState: defaultState,
+    onGlobalStateChange(callback) { receive = callback },
+    setGlobalState(patch) {
+      receive({ ...defaultState(), ...patch })
+      receive({ ...defaultState(), ...patch, source: 'host observer', count: 2 })
+      return true
+    }
+  })
+  const updates = []
+  bridge.subscribe(snapshot => updates.push(snapshot.count))
+  bridge.setState({ count: 1 })
+  assert.equal(bridge.getState().count, 2)
+  assert.equal(bridge.getState().source, 'host observer')
+  assert.deepEqual(updates, [0, 1, 2])
+  bridge.destroy()
+})
